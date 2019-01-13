@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 导入db.properties配置文件 -->
+	<context:property-placeholder location="classpath:db.properties"/>
+	<!-- 自动扫描和装配 -->
+	<context:component-scan base-package="com.bigchow"></context:component-scan>
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc_driverClassName}"></property>
+		<property name="url" value="${jdbc_url}"></property>
+		<property name="username" value="${jdbc_username}"></property>
+		<property name="password" value="${jdbc_password}"></property>
+	</bean>
+	<!-- 声明式事务管理 -->
+	<!-- 配置事务管理器 -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<!-- 配置事务通知 -->
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<!-- 配置哪些方法使用什么样的事务,配置事务的传播特性 -->
+			<tx:method name="add" propagation="NESTED"/>
+			<tx:method name="insert" propagation="REQUIRED"/>
+			<tx:method name="update" propagation="REQUIRED"/>
+			<tx:method name="remove" propagation="REQUIRED"/>
+			<tx:method name="delete" propagation="REQUIRED"/>
+			<tx:method name="get" read-only="true"/>
+			<tx:method name="select*" read-only="true"/>
+			<tx:method name="save" propagation="REQUIRED" read-only="false"/>
+			<tx:method name="*" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice>
+	<!-- 配置aop注解方式 -->
+	<tx:annotation-driven transaction-manager="txManager"/>
+	<aop:aspectj-autoproxy/>
+	<!-- 定义hibernate的sessionFactory -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<!-- 依赖注入数据源 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 不使用hibernate注解指定映射文件名  -->
+		<property name="mappingLocations">
+			<list>
+				<value>classpath:com/bigchow/ssh2/*/vo/*.hbm.xml</value>
+			</list>
+		</property>
+		<!-- 自动扫描注解方式配置hibernate类文件 -->
+		<!-- <property name="packagesToScan">
+			<list>
+				<value>com.bigchow.ssh2</value>
+			</list>
+		</property> -->
+		<!-- 定义hibernate的SessionFactory的属性 -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hiberante.dialect">${hiberante.dialect}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- 设置HibernateDaoSupport抽象类-->
+	<bean id="hibernateDaoSupport" class="org.springframework.orm.hibernate4.support.HibernateDaoSupport"
+		abstract="true">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+</beans>

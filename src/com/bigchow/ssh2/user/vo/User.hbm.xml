@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.bigchow.ssh2.user.vo">
+	<class name="User" table="user">
+		<id name="id">
+			<!-- 主键生成策略这里要使用uuid -->
+			<generator class="uuid"></generator>
+		</id>
+		<!-- 实体类的属性 -->
+		<property name="name"/>
+		<property name="pwd"/>
+		<property name="createTime"/>
+		<property name="modifyTime"/>
+	</class>
+</hibernate-mapping>

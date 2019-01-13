@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<!-- 无序配置result，让easyUI进行跳转，这里只是传输json数据 -->
+	<package name="user" namespace="/user" extends="struts-default">
+		<action name="register" class="userAction" method="registerUser"></action>
+		<action name="checkonly" class="userAction" method="checkOnlyName"></action>
+		<action name="login" class="userAction" method="loginUser"></action>
+		<action name="datagrid" class="userAction" method="datagrid"></action>
+		<action name="add" class="userAction" method="addUser"></action>
+		<action name="delete" class="userAction" method="deleteUser"></action>
+		<action name="edit" class="userAction" method="editUser"></action>
+	</package>
+</struts>

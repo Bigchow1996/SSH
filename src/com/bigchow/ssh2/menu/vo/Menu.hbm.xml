@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.bigchow.ssh2.menu.vo">
+	<class name="Menu" table="menu">
+		<id name="id">
+			<!-- 主键生成策略这里要使用uuid -->
+			<generator class="uuid"></generator>
+		</id>
+		<many-to-one name="menu" class="Menu"  column="pid"></many-to-one>
+		<property name="text"/>
+		<property name="iconCls"/>
+		<property name="url"/>
+		<set name="menus" cascade="all">
+			<key column="pid" foreign-key="fk_menu"></key>
+			<one-to-many class="Menu"/>
+		</set>
+	</class>
+</hibernate-mapping>
